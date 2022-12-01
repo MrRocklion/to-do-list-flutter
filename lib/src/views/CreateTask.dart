@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math';
+import '../scripts/db.dart';
+import '../scripts/task.dart';
 class CreateTask extends StatefulWidget {
   const CreateTask({Key? key}) : super(key: key);
 
@@ -11,6 +13,12 @@ enum prioridades { baja, media, alta }
 
 class _CreateTaskState extends State<CreateTask> {
   prioridades? _priority = prioridades.baja;
+  final asuntotxt = TextEditingController();
+  final contextotxt  = TextEditingController();
+  String _asunto = " ";
+  String _contexto = " ";
+  String _prioridad = "Baja";
+  int _id = 213;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,14 +45,27 @@ class _CreateTaskState extends State<CreateTask> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       TextField(
+                        controller: asuntotxt,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(), labelText: 'Asunto '),
+                        onChanged: (text){
+                          setState(() {
+                            this._asunto = text;
+                          });
+                      }
                       ),
                       TextField(
                         maxLines: null,
+                        controller: contextotxt,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                             ), labelText: 'Contexto'),
+
+                          onChanged: (text){
+                            setState(() {
+                              this._contexto = text;
+                            });
+                          }
                       ),
                       Text("Prioridad",style: TextStyle(fontSize:18,fontWeight: FontWeight.w700),),
                       Row(
@@ -60,7 +81,8 @@ class _CreateTaskState extends State<CreateTask> {
                                     groupValue: _priority,
                                     onChanged: (prioridades? value) {
                                       setState(() {
-                                        _priority = value;
+                                        this._priority = value;
+                                        this._prioridad  = "Baja";
                                       });
                                     }),
                                 Expanded(
@@ -81,6 +103,7 @@ class _CreateTaskState extends State<CreateTask> {
                                     onChanged: (prioridades? value) {
                                       setState(() {
                                         _priority = value;
+                                        this._prioridad  = "Media";
                                       });
                                     }),
                                 Expanded(child: Text('Media'))
@@ -99,6 +122,7 @@ class _CreateTaskState extends State<CreateTask> {
                                     onChanged: (prioridades? value) {
                                       setState(() {
                                         _priority = value;
+                                        this._prioridad  = "Alta";
                                       });
                                     }
                                     ),
@@ -114,7 +138,7 @@ class _CreateTaskState extends State<CreateTask> {
                 ),
                 Container(
                   child:  OutlinedButton(
-                      onPressed: (){},
+                      onPressed: crearTarea,
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(60),
                         backgroundColor: Colors.amber,
@@ -132,5 +156,16 @@ class _CreateTaskState extends State<CreateTask> {
         ),
       ),
     );
+  }
+
+  void crearTarea(){
+    var rng = Random();
+    setState(() {
+      this._id = rng.nextInt(4000) ;
+    });
+    asuntotxt.clear();
+    contextotxt.clear();
+    final _tarea = newTarea(this._id, this._asunto, this._contexto, this._prioridad);
+    DB.insert(_tarea);
   }
 }

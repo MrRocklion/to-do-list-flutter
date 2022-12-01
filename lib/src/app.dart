@@ -43,7 +43,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista De Tareas'),
+        title: const Text('Lista De Tareas By David Diaz'),
       ),
 
       body: Center(
@@ -68,4 +68,5 @@ class _CustomNavigationState extends State<CustomNavigation> {
     );
   }
 }
+
 
